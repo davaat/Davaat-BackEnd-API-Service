@@ -1,9 +1,7 @@
 # Davaat-BackEnd-API-Service
-
+The contract registration system
+<hr>
 Davaat BackEnd API Service in **Django** Framework. [Nima Dorostkar](https://nimadorostkar.com/)
-
-
-<br> The contract registration system  <br><hr>
 
 #### Pip
 ```bash
@@ -11,7 +9,7 @@ pip install -r requirements.txt
 
 ```
 
-#### Migrations
+#### Run
 ```bash
 python manage.py makemigrations
 python manage.py migrate
@@ -19,11 +17,9 @@ python manage.py runserver
 
 ```
 
-
 <br>
 
-
-![example](https://github.com/nimadorostkar/production-management/blob/master/screenshot/Screen%20Shot%201400-05-03%20at%2002.45.02.png)
+![davaat](https://github.com/davaat/Davaat-BackEnd-API-Service/blob/main/Screenshot.png)
 
 <br>
 
