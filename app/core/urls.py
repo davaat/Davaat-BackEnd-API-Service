@@ -10,8 +10,6 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('api/', include('authentication.urls')),
     path('api/', include('landing.urls')),
-    path('api/', include('TransferRequest.urls')),
-    path('api/', include('Service.urls')),
     path('api/rest-auth/', include('dj_rest_auth.urls')),
 ]
 if settings.DEBUG:
