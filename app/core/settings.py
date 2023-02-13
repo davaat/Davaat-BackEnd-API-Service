@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_filters',
     'dj_rest_auth',
     'authentication',
+    'contract',
     'landing',
 ]
 

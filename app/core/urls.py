@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='home'),
     path('api/', include('authentication.urls')),
+    path('api/', include('contract.urls')),
     path('api/', include('landing.urls')),
     path('api/rest-auth/', include('dj_rest_auth.urls')),
 ]
