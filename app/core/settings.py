@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'authentication',
     'contract',
     'landing',
+    'signature',
+    'reminders',
+    'message',
 ]
 
 MIDDLEWARE = [
