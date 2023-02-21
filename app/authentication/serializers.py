@@ -10,7 +10,7 @@ class LoginSerializer(serializers.Serializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('phone', 'password', 'is_driver', 'national_code')
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):

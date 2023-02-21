@@ -8,7 +8,7 @@ from django.utils.html import format_html
 class Signature(Model):
     name = models.CharField(max_length=256, verbose_name='نام امضا')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    body = models.TextField(max_length=1000, verbose_name='توضیحات')
+    description = models.TextField(max_length=1000, verbose_name='توضیحات')
     image = models.ImageField(upload_to='user/signature', default='user/signature/default.png')
     updated_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
