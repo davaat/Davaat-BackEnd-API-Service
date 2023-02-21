@@ -28,7 +28,7 @@ class Contract(Model):
                ('منتظر امضا', 'منتظر امضا'),
                ('پایان مهلت امضا', 'پایان مهلت امضا'))
     status = models.CharField(max_length=256, choices=CHOICES, null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='category')
     body = models.TextField(max_length=1000)
     conclusion_date = models.CharField(max_length=256, null=True, blank=True, verbose_name='تاریخ انعقاد')
     end_date = models.CharField(max_length=256, null=True, blank=True, verbose_name='تاریخ پایان')
