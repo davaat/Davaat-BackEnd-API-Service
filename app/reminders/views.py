@@ -40,11 +40,13 @@ class ReminderItem(mixins.DestroyModelMixin, mixins.UpdateModelMixin, GenericAPI
 
     def put(self, request, *args, **kwargs):
         reminder = Reminder.objects.get(id=self.kwargs["id"])
-        serializer = ReminderSerializer(reminder, data=request.data)
+        data = request.data
+        data['user'] = request.user.id
+        serializer = ReminderSerializer(reminder, data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.data)
+        return Response(serializer.errors)
 
     def delete(self, request, *args, **kwargs):
         reminder = Reminder.objects.get(id=self.kwargs["id"])
