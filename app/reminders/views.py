@@ -20,7 +20,6 @@ from django.conf import settings
 from datetime import datetime, timedelta
 
 
-
 class ReminderLists(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
@@ -52,7 +51,6 @@ class ReminderItem(mixins.DestroyModelMixin, mixins.UpdateModelMixin, GenericAPI
         reminder = Reminder.objects.get(id=self.kwargs["id"])
         reminder.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 
