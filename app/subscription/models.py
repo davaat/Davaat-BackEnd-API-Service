@@ -16,8 +16,8 @@ class Subscription(Model):
 
 
 class UserSubscription(Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, related_name='Subscription')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subuser')
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, related_name='sub_subscription')
     start_date = models.CharField(max_length=256)
     end_date = models.CharField(max_length=256)
     CHOICES = (('فعال', 'فعال'),('به اتمام رسیده', 'به اتمام رسیده'),('لغو شده', 'لغو شده'))
