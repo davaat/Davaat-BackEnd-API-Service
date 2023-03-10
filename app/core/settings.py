@@ -83,6 +83,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 
+
+
+CORS_ALLOWED_ORIGINS = ['https://api.afrang.dev',]
+CSRF_TRUSTED_ORIGINS = ['https://api.afrang.dev',]
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {

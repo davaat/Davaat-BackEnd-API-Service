@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  app:
+    build: app
+    container_name: django-gunicorn
+    restart: always
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 core.wsgi:application"
+volumes:
+  app:
