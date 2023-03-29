@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from authentication import views
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     #path('email_activation', views.EmailActivation.as_view(), name='email_activation'),
     #path('otp_confirmation', views.OTPConfirmation.as_view(), name='otp_confirmation'),
     #path('email_confirmation', views.EmailConfirmation.as_view(), name='email_confirmation'),
+    path('reset_pass', views.ResetPass.as_view(), name='ResetPass'),
 ]
 
 

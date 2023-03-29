@@ -152,3 +152,35 @@ class Confirmation(APIView):
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response("User not verified", status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+
+
+
+class ResetPass(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            code = helper.random_code()
+            profile = User.objects.get(id=request.user.id)
+            profile.otp = code
+            profile.save()
+            # and email send...
+            return Response("The code was not sent but added to the panel. code: {}".format(code), status=status.HTTP_200_OK)
+        except:
+            return Response("somting wrong please try again" , status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            profile = User.objects.get(id=request.user.id)
+            if profile.otp == request.data['code']:
+                profile.password == request.data['newpass']
+                profile.save()
+                return Response("password changed sucsesfully", status=status.HTTP_200_OK)
+            else:
+                return Response("code isent correct, Please try again!", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
+
+

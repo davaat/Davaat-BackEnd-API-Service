@@ -4,7 +4,6 @@ from authentication.custom_usermanager import UserManager
 from django.utils.html import format_html
 
 
-
 class User(AbstractUser):
     username = None
     phone = models.CharField(max_length=256, unique=True)
@@ -30,3 +29,6 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
+
+
+

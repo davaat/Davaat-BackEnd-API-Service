@@ -54,6 +54,12 @@ docker-compose exec app python manage.py migrate
 ```
 
 
+Migrate all apps at the same time
+```
+docker-compose exec app python manage.py makemigrations authentication contract landing signature reminders message subscription
+```
+
+
 
 
 Collect static files
