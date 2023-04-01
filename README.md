@@ -5,6 +5,14 @@ The contract registration system
 
 Davaat BackEnd API Service in **Django** Framework. [Nima Dorostkar](https://nimadorostkar.com/)
 
+
+### Clone this repository
+
+```
+git clone https://github.com/davaat/Davaat-BackEnd-API-Service.git
+```
+
+
 #### Pip
 ```bash
 pip install -r requirements.txt
