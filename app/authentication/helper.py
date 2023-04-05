@@ -16,7 +16,7 @@ def otpsend(phone, otp):
         api = KavenegarAPI(Kavenegar_API)
         params = {
           'receptor': phone,
-          'template': 'RPTaxiVerify',
+          'template': 'verify',
           'token': otp,
           'type': 'sms',
           }
@@ -59,8 +59,8 @@ def check_otp_expiration(phone):
 
 
 
-def check_send_otp(mobile):
-    user = models.User.objects.get(mobile=mobile)
+def check_send_otp(phone):
+    user = models.User.objects.get(phone=phone)
     now = datetime.datetime.now()
     otp_time = user.otp_create_time
     diff_time = now - otp_time

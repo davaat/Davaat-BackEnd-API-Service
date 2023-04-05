@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from authentication.custom_usermanager import UserManager
 from django.utils.html import format_html
+from shortuuid.django_fields import ShortUUIDField
 
 
 class User(AbstractUser):
@@ -16,6 +17,8 @@ class User(AbstractUser):
     otp_confirmed = models.BooleanField(default=False)
     email_confirmed = models.BooleanField(default=False)
     photo = models.ImageField(upload_to='user/photo', default='user/photo/default.png')
+    invitation_referral = ShortUUIDField(length=8, max_length=15, alphabet="abcdefg1234", editable=False)
+    referral = models.CharField(max_length=256, null=True, blank=True)
     updated_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
 

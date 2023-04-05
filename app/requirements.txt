@@ -8,3 +8,4 @@ dj-rest-auth
 gunicorn
 Pillow
 kavenegar
+shortuuid

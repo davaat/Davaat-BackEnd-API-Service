@@ -158,7 +158,59 @@ class Confirmation(APIView):
 
 
 class ResetPass(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            phone = request.data['phone']
+            user = User.objects.get(phone=phone)
+            #send otp
+            if helper.check_send_otp(user.phone):
+                # send otp
+                otp = helper.get_random_otp()
+                print(otp)
+                helper.otpsend(phone, otp)
+                # helper.send_otp_soap(mobile, otp)
+                user.otp = otp
+                user.otp_create_time = datetime.datetime.now()
+                user.save()
+                return Response('کد تایید به شماره {} ارسال شد'.format(phone), status=status.HTTP_200_OK)
+            else:
+                return Response('کد ارسال شده، لطفا ۲ دقیقه دیگر اقدام نمایید', status=status.HTTP_408_REQUEST_TIMEOUT)
+        except:
+            return Response("User not found or somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class ResetPassConf(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            phone = request.data['phone']
+            otp = request.data['otp']
+            password = request.data['password']
+            user = User.objects.get(phone=phone)
+            #send otp
+            if helper.check_send_otp(user.phone):
+                # send otp
+                otp = helper.get_random_otp()
+                print(otp)
+                helper.otpsend(phone, otp)
+                # helper.send_otp_soap(mobile, otp)
+                user.otp = otp
+                user.otp_create_time = datetime.datetime.now()
+                user.save()
+                return Response('کد تایید به شماره {} ارسال شد'.format(phone), status=status.HTTP_200_OK)
+            else:
+                return Response('کد ارسال شده، لطفا ۲ دقیقه دیگر اقدام نمایید', status=status.HTTP_408_REQUEST_TIMEOUT)
+        except:
+            return Response("User not found or somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
+
+
+
+'''
 
     def get(self, request, *args, **kwargs):
         try:
@@ -171,16 +223,11 @@ class ResetPass(APIView):
         except:
             return Response("somting wrong please try again" , status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, *args, **kwargs):
-        try:
-            profile = User.objects.get(id=request.user.id)
+
             if profile.otp == request.data['code']:
                 profile.password == request.data['newpass']
                 profile.save()
                 return Response("password changed sucsesfully", status=status.HTTP_200_OK)
             else:
                 return Response("code isent correct, Please try again!", status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response("somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
-
-
+'''
