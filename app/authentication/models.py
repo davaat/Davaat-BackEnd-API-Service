@@ -7,7 +7,9 @@ from shortuuid.django_fields import ShortUUIDField
 
 class User(AbstractUser):
     username = None
-    phone = models.CharField(max_length=256, unique=True)
+    is_company = models.BooleanField(default=False, verbose_name="شرکت می باشد")
+    company = models.CharField(max_length=256, null=True, blank=True, verbose_name="نام شرکت")
+    phone = models.CharField(max_length=256, null=True, blank=True, unique=True)
     email = models.EmailField(max_length=256, null=True, blank=True, unique=True)
     national_code = models.CharField(max_length=256, unique=True, null=True, blank=True)
     father_name = models.CharField(max_length=256, null=True, blank=True)

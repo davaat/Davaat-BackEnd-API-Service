@@ -17,6 +17,7 @@ from django.core.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from django.conf import settings
 from datetime import datetime, timedelta
+from django.utils import timezone
 from . import helper
 
 
@@ -172,13 +173,13 @@ class ResetPass(APIView):
                 helper.otpsend(phone, otp)
                 # helper.send_otp_soap(mobile, otp)
                 user.otp = otp
-                user.otp_create_time = datetime.datetime.now()
+                user.otp_create_time = timezone.now()
                 user.save()
                 return Response('کد تایید به شماره {} ارسال شد'.format(phone), status=status.HTTP_200_OK)
             else:
                 return Response('کد ارسال شده، لطفا ۲ دقیقه دیگر اقدام نمایید', status=status.HTTP_408_REQUEST_TIMEOUT)
-        except:
-            return Response("User not found or somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response("User not found or somting wrong, please try again. {}".format(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -205,9 +206,8 @@ class ResetPassConf(APIView):
                 return Response('کد تایید به شماره {} ارسال شد'.format(phone), status=status.HTTP_200_OK)
             else:
                 return Response('کد ارسال شده، لطفا ۲ دقیقه دیگر اقدام نمایید', status=status.HTTP_408_REQUEST_TIMEOUT)
-        except:
-            return Response("User not found or somting wrong, please try again" , status=status.HTTP_400_BAD_REQUEST)
-
+        except Exception as e:
+            return Response("User not found or somting wrong, please try again. {}".format(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 '''
