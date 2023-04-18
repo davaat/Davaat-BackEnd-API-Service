@@ -1,6 +1,7 @@
 from django.urls import path, include
 from authentication import views
 
+
 urlpatterns = [
     path('login', views.Login.as_view(), name='Login'),
     path('register', views.Register.as_view(), name='register'),
@@ -14,5 +15,3 @@ urlpatterns = [
     path('reset_pass', views.ResetPass.as_view(), name='ResetPass'),
     path('reset_pass_conf', views.ResetPassConf.as_view(), name='ResetPassConf'),
 ]
-
-

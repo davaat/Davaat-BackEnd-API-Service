@@ -21,6 +21,9 @@ from django.utils import timezone
 from . import helper
 
 
+
+
+
 class Login(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -54,22 +57,31 @@ class Logout(APIView):
 
 
 
+
 class Register(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        data = request.data
+        data['is_company'] = True
+        password = User.objects.make_random_password(length=14, allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
+        data['password'] = password
+        serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
             data = serializer.validated_data
             serializer.save()
             user = User.objects.get(phone=data['phone'])
+            user.set_password(password)
+            user.save(update_fields=['password'])
             login(request, user)
             token = RefreshToken.for_user(user)
             token_response = {"refresh": str(token), "access": str(token.access_token)}
             response = {'token': token_response, 'user': UserSerializer(user).data}
+            print(password)
+            otp=password
+            helper.otpsend(user.phone, otp)
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
-
 
 
 
