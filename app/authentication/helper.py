@@ -1,5 +1,5 @@
 from kavenegar import *
-from core.settings import Kavenegar_API
+from core.settings import Kavenegar_API, EMAIL_HOST_USER
 from random import randint
 from . import models
 import datetime
@@ -7,6 +7,10 @@ import time
 import random
 import string
 import json
+from rest_framework.response import Response
+from rest_framework import status
+from django.core.mail import BadHeaderError, send_mail
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 
@@ -68,3 +72,27 @@ def check_send_otp(phone):
     if diff_time.seconds > 120:
         return True
     return False
+
+
+
+
+
+
+
+def email_send_code(user, password):
+    subject = 'Davaat account password'
+    message = f'Hi {user.first_name}, Thank you for using our service. Your password is: {password}'
+    from_email = EMAIL_HOST_USER
+    recipient_list = [user.email, ]
+    if subject and message and from_email:
+        try:
+            send_mail(subject, message, from_email, recipient_list)
+        except BadHeaderError:
+            return 0
+            #return HttpResponse('Invalid header found.')
+        return 1
+        #return HttpResponseRedirect('/contact/thanks/')
+    else:
+        return 0
+        #return HttpResponse('Make sure all fields are entered and valid.')
+

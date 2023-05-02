@@ -24,7 +24,7 @@ from . import helper
 
 
 
-class Login(APIView):
+class CompanyLogin(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -33,14 +33,16 @@ class Login(APIView):
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
         try:
-            user = authenticate(request, phone=data['phone'], password=data['password'])
+            user = authenticate(request, email=data['email'], password=data['password'])
             login(request, user)
             token = RefreshToken.for_user(user)
             token_response = { "refresh": str(token), "access": str(token.access_token) }
             response = { 'token':token_response , 'user':UserSerializer(user).data }
             return Response(response, status=status.HTTP_200_OK)
         except:
-            return Response('username or password is incorrect', status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response('email or password is incorrect', status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 
 
 
@@ -56,6 +58,8 @@ class Logout(APIView):
 
 
 
+'''
+
 
 
 class Register(APIView):
@@ -69,9 +73,10 @@ class Register(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             serializer.save()
-            user = User.objects.get(phone=data['phone'])
+            user = User.objects.get(email=data['email'])
             user.set_password(password)
             user.save(update_fields=['password'])
+            
             login(request, user)
             token = RefreshToken.for_user(user)
             token_response = {"refresh": str(token), "access": str(token.access_token)}
@@ -82,6 +87,36 @@ class Register(APIView):
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
+
+
+
+'''
+
+class CompanyRegister(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        data = request.data
+        data['is_company'] = True
+        password = User.objects.make_random_password(length=14, allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
+        data['password'] = password
+        serializer = RegisterSerializer(data=data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            serializer.save()
+            user = User.objects.get(email=data['email'])
+            user.set_password(password)
+            user.save(update_fields=['password'])
+            print(password)
+
+            if helper.email_send_code(user, password):
+                email_msg = "password send to {}".format(user.email)
+            else:
+                email_msg = "Error sending email - Please try again!"
+
+            return Response(email_msg, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
+
 
 
 
