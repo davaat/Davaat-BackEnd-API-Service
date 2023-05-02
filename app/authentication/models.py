@@ -38,7 +38,7 @@ class User(AbstractUser):
     otp_confirmed = models.BooleanField(default=False)
     #email_confirmed = models.BooleanField(default=False)
     photo = models.ImageField(upload_to='user/photo', default='user/photo/default.png')
-    invitation_referral = ShortUUIDField(length=8, max_length=15, alphabet="abcdefg1234", editable=False)
+    invitation_referral = ShortUUIDField(length=10, max_length=15, alphabet="abcdefg1234", editable=False, unique=True)
     referral = models.CharField(max_length=256, null=True, blank=True)
     status = models.CharField(max_length=256, null=True, blank=True)
     status_set_time = models.DateTimeField(null=True, blank=True)
