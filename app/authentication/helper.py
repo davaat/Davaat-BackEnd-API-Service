@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import BadHeaderError, send_mail
 from django.http import HttpResponse, HttpResponseRedirect
-
+from django.utils import timezone
 
 
 
@@ -47,7 +47,7 @@ def get_random_otp():
 def check_otp_expiration(phone):
     try:
         user = models.User.objects.get(phone=phone)
-        now = datetime.datetime.now()
+        now = timezone.now()
         otp_time = user.otp_create_time
         diff_time = now - otp_time
         print('OTP TIME: ', diff_time)
@@ -65,7 +65,7 @@ def check_otp_expiration(phone):
 
 def check_send_otp(phone):
     user = models.User.objects.get(phone=phone)
-    now = datetime.datetime.now()
+    now = timezone.now()
     otp_time = user.otp_create_time
     diff_time = now - otp_time
 
