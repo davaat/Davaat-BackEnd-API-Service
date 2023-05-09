@@ -247,6 +247,7 @@ class ResetPass(APIView):
 
 
 
+
 class ResetPassConf(APIView):
     permission_classes = [AllowAny]
 
@@ -274,4 +275,5 @@ class ResetPassConf(APIView):
         user.save()
 
         return Response('password changed successfully', status=status.HTTP_200_OK)
+
 
