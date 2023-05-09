@@ -41,9 +41,6 @@ def get_random_otp():
 
 
 
-
-
-
 def check_otp_expiration(phone):
     try:
         user = models.User.objects.get(phone=phone)
@@ -72,8 +69,6 @@ def check_send_otp(phone):
     if diff_time.seconds > 120:
         return True
     return False
-
-
 
 
 
