@@ -38,3 +38,10 @@ class ResetPassOTPSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=64, allow_null=False)
     otp = serializers.CharField(max_length=5, allow_null=False)
     password = serializers.CharField(max_length=64, allow_null=False)
+
+
+
+
+class UserLoginSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=64, allow_null=False)
+    national_code = serializers.CharField(max_length=64, allow_null=False)

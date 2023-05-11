@@ -1,6 +1,6 @@
 from .models import User
 #from django.http import JsonResponse
-from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, ConfirmationSerializer, ResetPassOTPSerializer, RequestOTPSerializer, ConfirmationOTPSerializer
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, ConfirmationSerializer, ResetPassOTPSerializer, RequestOTPSerializer, UserLoginSerializer, ConfirmationOTPSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
@@ -28,15 +28,16 @@ class UserLogin(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = RequestOTPSerializer(data=request.data)
+        serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data = serializer.errors)
 
         try:
+            national_code = data['national_code']
             phone = data['phone']
-            user = User.objects.get(phone=phone)
+            user = User.objects.get(phone=phone,national_code=national_code)
 
             if helper.check_send_otp(user.phone):
                 # send otp
@@ -52,7 +53,7 @@ class UserLogin(APIView):
                 return Response('کد ارسال شده، لطفا ۲ دقیقه دیگر اقدام نمایید' , status=status.HTTP_408_REQUEST_TIMEOUT)
 
         except User.DoesNotExist:
-            return Response('کاربری با شماره {} یافت نشد، لطفا ثبت نام کنید'.format(data['phone']) , status=status.HTTP_400_BAD_REQUEST)
+            return Response('عدم تطابق کد ملی با شماره موبایل یا پیدا نکردن یوزر، لطفا ثبت نام کنید و یا مجددا تلاش کنید' , status=status.HTTP_400_BAD_REQUEST)
 
 
 
