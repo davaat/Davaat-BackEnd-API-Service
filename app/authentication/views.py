@@ -1,4 +1,4 @@
-from .models import User
+from .models import User, InvitationLink
 #from django.http import JsonResponse
 from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, ConfirmationSerializer, ResetPassOTPSerializer, RequestOTPSerializer, UserLoginSerializer, ConfirmationOTPSerializer
 from rest_framework.generics import GenericAPIView
@@ -19,6 +19,28 @@ from django.conf import settings
 from datetime import datetime, timedelta
 from django.utils import timezone
 from . import helper
+
+
+
+
+
+
+class GenerateInvitationLink(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(id=request.user.id)
+            if user.is_company:
+                new_link = InvitationLink()
+                new_link.company = user
+                new_link.save()
+                response = {'message':'new invitation link created successfully', 'invitation_referral':new_link.invitation_referral}
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                return Response('مجاز به ایجاد لینک دعوت نیستید', status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response('کاربر پیدا نشد ، لطفا مجددا تلاش کنید' , status=status.HTTP_400_BAD_REQUEST)
 
 
 

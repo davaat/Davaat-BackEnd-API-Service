@@ -5,6 +5,7 @@ from authentication import views
 urlpatterns = [
     path('company_login', views.CompanyLogin.as_view(), name='company_login'),
     path('company_register', views.CompanyRegister.as_view(), name='company_register'),
+    path('gen_invite', views.GenerateInvitationLink.as_view(), name='gen_invite'),
     path('user_register', views.UserRegister.as_view(), name='user_register'),
     path('user_login', views.UserLogin.as_view(), name='user_login'),
     path('logout', views.Logout.as_view(), name='logout'),
