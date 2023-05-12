@@ -1,6 +1,6 @@
 from .models import User, InvitationLink
 #from django.http import JsonResponse
-from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, ConfirmationSerializer, ResetPassOTPSerializer, RequestOTPSerializer, UserLoginSerializer, ConfirmationOTPSerializer
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, ConfirmationSerializer, SendinviteSerializer, ResetPassOTPSerializer, RequestOTPSerializer, UserLoginSerializer, ConfirmationOTPSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
@@ -23,8 +23,6 @@ from . import helper
 
 
 
-
-
 class GenerateInvitationLink(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -42,6 +40,32 @@ class GenerateInvitationLink(APIView):
         except:
             return Response('کاربر پیدا نشد ، لطفا مجددا تلاش کنید' , status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+class GenerateSendInvitationLink(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = SendinviteSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            phone = data['phone']
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
+        try:
+            user = User.objects.get(id=request.user.id)
+            if user.is_company:
+                new_link = InvitationLink()
+                new_link.company = user
+                new_link.save()
+                otp = 'www.davat.co/api/user_register?referral={}'.format(new_link.invitation_referral)
+                helper.otpsend(phone, otp)
+                return Response(otp, status=status.HTTP_200_OK)
+            else:
+                return Response('مجاز به ایجاد لینک دعوت نیستید', status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response('کاربر پیدا نشد ، لطفا مجددا تلاش کنید' , status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -118,25 +142,35 @@ class UserRegister(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         data = request.data
-        if User.objects.filter(is_company=True, invitation_referral=data['referral']).exists():
-            data['is_company'] = False
-            password = User.objects.make_random_password(length=14, allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
-            data['password'] = password
-            serializer = RegisterSerializer(data=data)
-            if serializer.is_valid():
-                data = serializer.validated_data
-                serializer.save()
-                user = User.objects.get(phone=data['phone'])
-                otp = helper.get_random_otp()
-                helper.otpsend(user.phone, otp)
-                print(otp)
-                user.otp = otp
-                user.otp_create_time = timezone.now()
-                user.save()
-                return Response('کد تایید به شماره {} ارسال شد'.format(user.phone), status=status.HTTP_200_OK)
+        try:
+            invite_ink = InvitationLink.objects.get(invitation_referral=data['referral'])
+            if invite_ink.unused:
+
+                delta = (timezone.now()-invite_ink.created_on).total_seconds()
+                delta_hours = delta / (60 * 60)
+                if delta_hours < 8:
+                    data['is_company'] = False
+                    password = User.objects.make_random_password(length=14, allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
+                    data['password'] = password
+                    serializer = RegisterSerializer(data=data)
+                    if serializer.is_valid():
+                        data = serializer.validated_data
+                        serializer.save()
+                        user = User.objects.get(phone=data['phone'])
+                        otp = helper.get_random_otp()
+                        helper.otpsend(user.phone, otp)
+                        print(otp)
+                        user.otp = otp
+                        user.otp_create_time = timezone.now()
+                        user.save()
+                        return Response('کد تایید به شماره {} ارسال شد'.format(user.phone), status=status.HTTP_200_OK)
+                    else:
+                        return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
+                else:
+                    return Response("The invitate referral has expired.", status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
-        else:
+                return Response("The invitate referral has already been used.", status=status.HTTP_400_BAD_REQUEST)
+        except:
             return Response("invitation referral not found or somting wrong, please try again.", status=status.HTTP_400_BAD_REQUEST)
 
 

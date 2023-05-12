@@ -45,3 +45,10 @@ class ResetPassOTPSerializer(serializers.Serializer):
 class UserLoginSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=64, allow_null=False)
     national_code = serializers.CharField(max_length=64, allow_null=False)
+
+
+
+
+
+class SendinviteSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=64, allow_null=False)
