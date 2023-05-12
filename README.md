@@ -9,6 +9,10 @@ Davaat BackEnd API Service in **Django** Framework. [Nima Dorostkar](https://nim
 ### Clone this repository
 
 ```
+rm -rf
+```
+
+```
 git clone https://github.com/davaat/Davaat-BackEnd-API-Service.git
 ```
 
