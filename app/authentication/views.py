@@ -58,6 +58,7 @@ class GenerateSendInvitationLink(APIView):
             if user.is_company:
                 new_link = InvitationLink()
                 new_link.company = user
+                new_link.phone = phone
                 new_link.save()
                 otp = 'www.davat.co/api/user_register?referral={}'.format(new_link.invitation_referral)
                 helper.otpsend(phone, otp)

@@ -65,6 +65,7 @@ class User(AbstractUser):
 
 class InvitationLink(models.Model):
     unused = models.BooleanField(default=True)
+    phone = models.CharField(max_length=256)
     company = models.ForeignKey(User, on_delete=models.CASCADE)
     invitation_referral = ShortUUIDField(length=10, max_length=15, alphabet="abcdefg1234", editable=False, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
