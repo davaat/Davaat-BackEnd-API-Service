@@ -140,7 +140,6 @@ class Logout(APIView):
 
 
 
-
 class UserRegister(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -179,7 +178,6 @@ class UserRegister(APIView):
                 return Response("The invitate referral has already been used.", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("invitation referral not found or somting wrong, please try again.", status=status.HTTP_400_BAD_REQUEST)
-
 
 
 
