@@ -55,12 +55,14 @@ class GenerateSendInvitationLink(APIView):
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
         try:
             user = User.objects.get(id=request.user.id)
+            print(user)
             if user.is_company:
                 new_link = InvitationLink()
                 new_link.company = user
                 new_link.phone = phone
                 new_link.save()
-                otp = 'www.davat.co/api/user_register?referral={}'.format(new_link.invitation_referral)
+                otp = "www.davat.co/api/user_register?referral={}&phone={}".format(new_link.invitation_referral,phone)
+                print(otp)
                 helper.otpsend(phone, otp)
                 return Response(otp, status=status.HTTP_200_OK)
             else:
@@ -146,29 +148,33 @@ class UserRegister(APIView):
         try:
             invite_ink = InvitationLink.objects.get(invitation_referral=data['referral'])
             if invite_ink.unused:
-
-                delta = (timezone.now()-invite_ink.created_on).total_seconds()
-                delta_hours = delta / (60 * 60)
-                if delta_hours < 8:
-                    data['is_company'] = False
-                    password = User.objects.make_random_password(length=14, allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
-                    data['password'] = password
-                    serializer = RegisterSerializer(data=data)
-                    if serializer.is_valid():
-                        data = serializer.validated_data
-                        serializer.save()
-                        user = User.objects.get(phone=data['phone'])
-                        otp = helper.get_random_otp()
-                        helper.otpsend(user.phone, otp)
-                        print(otp)
-                        user.otp = otp
-                        user.otp_create_time = timezone.now()
-                        user.save()
-                        return Response('کد تایید به شماره {} ارسال شد'.format(user.phone), status=status.HTTP_200_OK)
+                if invite_ink.phone==request.GET.get('phone'):
+                    delta = (timezone.now() - invite_ink.created_on).total_seconds()
+                    delta_hours = delta / (60 * 60)
+                    if delta_hours < 48:
+                        data['is_company'] = False
+                        password = User.objects.make_random_password(length=14,
+                                                                     allowed_chars="abcdefghjkmnpqrstuvwxyz01234567889")
+                        data['password'] = password
+                        serializer = RegisterSerializer(data=data)
+                        if serializer.is_valid():
+                            data = serializer.validated_data
+                            serializer.save()
+                            user = User.objects.get(phone=data['phone'])
+                            otp = helper.get_random_otp()
+                            helper.otpsend(user.phone, otp)
+                            print(otp)
+                            user.otp = otp
+                            user.otp_create_time = timezone.now()
+                            user.save()
+                            return Response('کد تایید به شماره {} ارسال شد'.format(user.phone),
+                                            status=status.HTTP_200_OK)
+                        else:
+                            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
                     else:
-                        return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=serializer.errors)
+                        return Response("The invitate referral has expired.", status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response("The invitate referral has expired.", status=status.HTTP_400_BAD_REQUEST)
+                    return Response("The mobile number entered is not related to this invitation link", status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response("The invitate referral has already been used.", status=status.HTTP_400_BAD_REQUEST)
         except:
