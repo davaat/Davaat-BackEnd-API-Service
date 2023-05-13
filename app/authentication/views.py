@@ -231,7 +231,6 @@ class OTPConfirmation(APIView):
         token = RefreshToken.for_user(user)
         token_response = {"refresh": str(token), "access": str(token.access_token)}
         response = {'token': token_response, 'user': UserSerializer(user).data}
-        response.set_cookie('jwt_token', token_response)
         return Response(response, status=status.HTTP_200_OK)
 
 
