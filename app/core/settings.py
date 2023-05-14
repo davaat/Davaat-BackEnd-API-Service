@@ -85,8 +85,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 
-CORS_ALLOWED_ORIGINS = ['http://davat.co','84.32.10.92']
-CSRF_TRUSTED_ORIGINS = ['http://davat.co', '84.32.10.92']
+CORS_ALLOWED_ORIGINS = ['http://davat.co','http://84.32.10.92']
+CSRF_TRUSTED_ORIGINS = ['http://davat.co', 'http://84.32.10.92']
 CORS_ORIGIN_ALLOW_ALL = True
 
 
