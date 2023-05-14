@@ -120,7 +120,7 @@ class CompanyLogin(APIView):
             token = RefreshToken.for_user(user)
             token_response = { "refresh": str(token), "access": str(token.access_token) }
             response = { 'token':token_response , 'user':UserSerializer(user).data }
-            response.set_cookie('jwt_token', token_response)
+            #response.set_cookie('jwt_token', token_response)
             return Response(response, status=status.HTTP_200_OK)
         except:
             return Response('email or password is incorrect', status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -276,7 +276,7 @@ class Confirmation(APIView):
             token = RefreshToken.for_user(profile)
             token_response = { "refresh": str(token), "access": str(token.access_token) }
             response = { 'token':token_response , 'user':UserSerializer(profile).data }
-            response.set_cookie('jwt_token', token_response)
+            #response.set_cookie('jwt_token', token_response)
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response("User not verified", status=status.HTTP_406_NOT_ACCEPTABLE)
