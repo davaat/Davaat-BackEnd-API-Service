@@ -23,15 +23,12 @@ from django.middleware import csrf
 
 
 
-
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
-
-
 
 
 
@@ -147,8 +144,6 @@ class CompanyLogin(APIView):
             #return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response('email or password is incorrect or something wrong.  [ {} ]'.format(repr(e)), status=status.HTTP_406_NOT_ACCEPTABLE)
-
-
 
 
 
