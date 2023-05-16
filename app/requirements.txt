@@ -9,3 +9,5 @@ gunicorn
 Pillow
 kavenegar
 shortuuid
+docx2txt
+python-docx

@@ -19,8 +19,8 @@ from django.core.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from django.conf import settings
 from datetime import datetime, timedelta
-
-
+import docx2txt
+from docx import Document
 
 
 
@@ -53,7 +53,14 @@ class UploadContract(APIView):
     def post(self, request, format=None):
         data = request.data
         data['user'] = request.user.id
-        return Response('ttt', status=status.HTTP_200_OK)
+
+        #TEXT = docx2txt.process(data['file'])
+
+        document = Document(data['file'])
+        print(document._body._body.xml)
+
+
+        return Response(document._body._body.xml, status=status.HTTP_200_OK)
         #serializer = ContractSerializer(data=data)
         #if serializer.is_valid():
             #serializer.save()
