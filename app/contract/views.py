@@ -21,6 +21,8 @@ from django.conf import settings
 from datetime import datetime, timedelta
 import docx2txt
 from docx import Document
+import mammoth
+
 
 
 
@@ -56,14 +58,18 @@ class UploadContract(APIView):
 
         #TEXT = docx2txt.process(data['file'])
 
-        document = Document(data['file'])
-        print(document._body._body.xml)
+        #document = Document(data['file'])
+        #print(document._body._body.xml)
+
+        result = mammoth.convert_to_html(data['file'])
+        html = result.value  # The generated HTML
+        messages = result.messages  # Any messages, such as warnings during conversion
+
+        return Response(html, status=status.HTTP_200_OK)
 
 
-        return Response(document._body._body.xml, status=status.HTTP_200_OK)
-        #serializer = ContractSerializer(data=data)
-        #if serializer.is_valid():
-            #serializer.save()
-            #return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # https://stackabuse.com/how-to-convert-docx-to-html-with-python-mammoth/
+    # https://pypi.org/project/docx2html/
+    # https://npmdoc.github.io/node-npmdoc-mammoth/build/apidoc.html
+
 

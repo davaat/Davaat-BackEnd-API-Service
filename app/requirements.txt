@@ -11,3 +11,4 @@ kavenegar
 shortuuid
 docx2txt
 python-docx
+mammoth
