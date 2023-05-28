@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'signature',
     'reminders',
     'message',
-    'subscription'
+    'subscription',
+    'tag'
 ]
 
 MIDDLEWARE = [

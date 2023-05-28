@@ -1,8 +1,8 @@
 from authentication.models import User
 from signature.models import Signature
-from contract.models import Contract
-#from django.http import JsonResponse
-from .serializers import ContractSerializer
+from contract.models import Contract, Questionnaire, Question
+from django.http import JsonResponse
+from .serializers import ContractSerializer, QuestionnaireSerializer, QuestionSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,6 +22,54 @@ from datetime import datetime, timedelta
 import docx2txt
 from docx import Document
 import mammoth
+
+
+
+
+class UserQuestionnaireList(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+
+        query = Questionnaire.objects.filter(creator=request.user)
+        query_serializer = QuestionnaireSerializer(query, many=True)
+
+        ''' 
+        for Q in query:
+            questions = Question.objects.filter(questionnaire=Q)
+            question_serializer = QuestionSerializer(questions, many=True)
+            q_serializer = QuestionnaireSerializer(Q, many=True)
+
+            print('---------')
+            print(question_serializer)
+            print(q_serializer)
+        print('----------------')
+
+            #questionnaire_obj = {'Questionnaire':q_serializer,'questions':question_serializer }
+            #list.append(questionnaire_obj)
+        '''
+        return Response(query_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class AddQuestionnaire(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        data = request.data
+        try:
+            questionnaire = Questionnaire()
+            questionnaire.creator = User.objects.get(id=request.user.id)
+            questionnaire.contract = Contract.objects.get(id=data['contract'])
+            questionnaire.save()
+
+            question = Question()
+            question.questionnaire = Questionnaire.objects.get(id=questionnaire.id)
+            for q in data['questions']:
+                question.question = q
+            question.save()
+            return Response('questionnaire create successfully', status=status.HTTP_201_CREATED)
+        except:
+            return Response('something went wrong please try again', status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
