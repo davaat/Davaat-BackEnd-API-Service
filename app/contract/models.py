@@ -5,7 +5,6 @@ from tag.models import Tag
 
 
 
-
 class Category(models.Model):
     name = models.CharField(max_length=256, unique=True, verbose_name='دسته بندی')
 
@@ -14,13 +13,21 @@ class Category(models.Model):
 
 
 
+class ContractFile(models.Model):
+    uploader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploader', verbose_name='uploader')
+    name = models.CharField(max_length=256)
+    file = models.FileField(upload_to='files')
+
+    def __str__(self):
+        return str(self.name)
+
 
 
 
 
 class Contract(Model):
     title = models.CharField(max_length=256)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user', verbose_name='creator')
     contracting_party = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contracting_party', verbose_name='طرف قرارداد')
     CHOICES = (('تکمیل شده', 'تکمیل شده'),
                ('تدوین قرارداد', 'تدوین قرارداد'),
@@ -34,7 +41,7 @@ class Contract(Model):
     body = models.TextField(max_length=1000)
     conclusion_date = models.CharField(max_length=256, null=True, blank=True, verbose_name='تاریخ انعقاد')
     end_date = models.CharField(max_length=256, null=True, blank=True, verbose_name='تاریخ پایان')
-    file = models.FileField(upload_to='files', null=True, blank=True, verbose_name="فایل های ضمیمه شده")
+    file = models.ForeignKey(ContractFile, on_delete=models.CASCADE, related_name='ContractFile', verbose_name='ContractFile')
     updated_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
 

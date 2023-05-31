@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Contract, Category, Questionnaire, Question, CustomSettings, GeneralSettings
+from .models import Contract, Category, Questionnaire, Question, CustomSettings, GeneralSettings, ContractFile
+
+
+class ContractFileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'uploader', 'file')
+admin.site.register(ContractFile, ContractFileAdmin)
+
 
 
 class CategoryAdmin(admin.ModelAdmin):
