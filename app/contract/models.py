@@ -7,6 +7,7 @@ from tag.models import Tag
 
 class Category(models.Model):
     name = models.CharField(max_length=256, unique=True, verbose_name='دسته بندی')
+    creator_company = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator_company')
 
     def __str__(self):
         return str(self.name)
@@ -20,6 +21,14 @@ class ContractFile(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class ContractFileSettings(models.Model):
+    contract_file = models.OneToOneField(ContractFile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.contract_file)
+
 
 
 

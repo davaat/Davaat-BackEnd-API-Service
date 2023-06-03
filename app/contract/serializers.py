@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Contract, Questionnaire, Question
+from .models import Contract, Questionnaire, Question, Category, ContractFile
 
 
 class ContractSerializer(serializers.ModelSerializer):
@@ -22,3 +22,15 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
         model = Questionnaire
         fields = '__all__'
 
+
+class CatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+
+class ContractlibrarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractFile
+        fields = '__all__'

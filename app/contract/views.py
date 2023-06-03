@@ -1,8 +1,8 @@
 from authentication.models import User
 from signature.models import Signature
-from contract.models import Contract, Questionnaire, Question
+from contract.models import Contract, Questionnaire, Question, Category, ContractFile
 from django.http import JsonResponse
-from .serializers import ContractSerializer, QuestionnaireSerializer, QuestionSerializer
+from .serializers import ContractSerializer, QuestionnaireSerializer, QuestionSerializer, CatSerializer, ContractlibrarySerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
@@ -69,6 +69,56 @@ class AddQuestionnaire(APIView):
             return Response('questionnaire create successfully', status=status.HTTP_201_CREATED)
         except:
             return Response('something went wrong please try again', status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+class AddCat(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        data = request.data
+        data['creator_company'] = request.user.id
+        serializer = CatSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class Catlist(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, format=None):
+        query = Category.objects.all()
+        serializer = CatSerializer(query, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class Contractlibrary(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, format=None):
+        try:
+            query = ContractFile.objects.filter(uploader=User.objects.get(id=request.user.id))
+            serializer = ContractlibrarySerializer(query, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response('library for this user not found something went wrong', status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class AddContractLibrary(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        data = request.data
+        data['uploader'] = request.user.id
+        serializer = ContractlibrarySerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
